@@ -1,1 +1,2 @@
-# BART-Trip-Scheduler
+# BART Trip Scheduler
+w/ @birbjam and @josemenis
