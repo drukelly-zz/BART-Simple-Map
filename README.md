@@ -1,5 +1,5 @@
 # BART Trip Scheduler
-w/ @birbjam and @josemenis
+A BART trip planner. The user can select a start point and an end point and see the route on the map.
 
 # Built With
 - HTML
@@ -10,10 +10,10 @@ w/ @birbjam and @josemenis
 
 # Authors
 - John Kelly
-- Jose Menis
-- Diana Lovette
+- Jose Menis (@josemenis)
+- Diana Lovette (@birbjam)
 
 # License
-- See LICENCE.md
+- GNU General Public License v3.0, See LICENCE.md for additional information.
 
 # Acknowledgments
