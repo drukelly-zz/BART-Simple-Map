@@ -9,7 +9,7 @@ A BART trip planner. The user can select a start point and an end point and see 
 - BART API
 
 # Authors
-- John Kelly
+- John Kelly (@drukelly)
 - Jose Menis (@josemenis)
 - Diana Lovette (@birbjam)
 
