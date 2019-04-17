@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8' />
+  <title>Fit to the bounds of a LineString</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css' rel='stylesheet' />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+
+    form {
+      background-color: white;
+      padding: 10px;
+      position: absolute;
+      text-align: center;
+      width: 100%;
+      z-index: 10;
+    }
+  </style>
+</head>
+
+<body>
+  <form>
+    <select name="pointA" id="pointA">
+      <option disabled selected>Point A</option>
+    </select>
+    <select name="pointB" id="pointB">
+      <option disabled selected>Point B</option>
+    </select>
+  </form>
+
+  <div id='map'></div>
+
+  <script>
+    const API_KEY = "MW9S-E7SL-26DU-VV8V";
+    const CMD = "stns";
+    const queryURL = `https://api.bart.gov/api/stn.aspx?cmd=${CMD}&key=${API_KEY}&json=y`;
+    let points = [];
+    // Fetching the API.
+    fetch(queryURL)
+      .then(result => result.json())
+      .then(response => {
+        let stations = response.root.stations.station;
+        // Uncomment next line to preview "stations" as a response
+        // console.log(stations)
+        let targetA = document.querySelector("#pointA");
+        let targetB = document.querySelector("#pointB");
+        stations.forEach(station => {
+          // For Mapbox API, lng first, then lat
+          let template = `<option data-mapbox-lng="${station.gtfs_longitude}" data-mapbox-lat="${station.gtfs_latitude}" value="${station.name}">${station.name}</option>`;
+          targetA.innerHTML += template;
+          targetB.innerHTML += template;
+        });
+      });
+    // Targets the select dropdown.
+    const selectGroups = document.querySelectorAll("select");
+    selectGroups.forEach(select => {
+      select.addEventListener("change", (event) => {
+        var lng = event.target.options[event.target.selectedIndex].getAttribute("data-mapbox-lng");
+        var lat = event.target.options[event.target.selectedIndex].getAttribute("data-mapbox-lat");
+        points.push([parseFloat(lng), parseFloat(lat)]);
+        if (points.length === 2) {
+          drawMap(points);
+        }
+      });
+    });
+    const drawMap = (points) => {
+      var geojson = {
+        "type": "FeatureCollection",
+        "features": [{
+          "type": "Feature",
+          "geometry": {
+            "type": "LineString",
+            "properties": {},
+            "coordinates": points
+          }
+        }]
+      };
+      // Mapbox
+      mapboxgl.accessToken = 'pk.eyJ1IjoiZHJ1a2VsbHkiLCJhIjoiY2p1ZGpsYzd1MDgyNTQ0bXRqbW5rbXk1dCJ9.IOyAszC7bL2GBhSRgCdAVQ';
+      // A GeoJSON object with a LineString route from the ___ to ___
+      var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/dark-v9',
+        center: [-122.056012, 37.928468],
+        zoom: 12
+      });
+      map.on('load', function () {
+        map.addLayer({
+          "id": "LineString",
+          "type": "line",
+          "source": {
+            "type": "geojson",
+            "data": geojson
+          },
+          "layout": {
+            "line-join": "round",
+            "line-cap": "round"
+          },
+          "paint": {
+            "line-color": "#FFD700",
+            "line-width": 5
+          }
+        });
+        // Geographic coordinates of the LineString
+        let coordinates = geojson.features[0].geometry.coordinates;
+        // Pass the first coordinates in the LineString to `lngLatBounds` &
+        // wrap each coordinate pair in `extend` to include them in the bounds
+        // result. A variation of this technique could be applied to zooming
+        // to the bounds of multiple Points or Polygon geomteries - it just
+        // requires wrapping all the coordinates with the extend method.
+        let bounds = coordinates.reduce(function (bounds, coord) {
+          return bounds.extend(coord);
+        }, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]));
+        map.fitBounds(bounds, {
+          padding: 100
+        });
+      });
+    }
+    // TODO
+    // https://stackoverflow.com/questions/26635880/remove-polylines-on-a-map-from-mapbox
+  </script>
+
+</body>
+
+</html>
