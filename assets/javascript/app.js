@@ -40,10 +40,54 @@ fetch(queryURL)
         });
     });
 
+var points = [];
+
 // Targets the select dropdown.
 const selectGroups = document.querySelectorAll("select");
 selectGroups.forEach(select => {
     select.addEventListener("change", () => {
-        console.log(event.target.options[event.target.selectedIndex].getAttribute("data-mapbox-gps"))
+        points.push([event.target.options[event.target.selectedIndex].getAttribute("data-mapbox-gps")]);
+        // Two Points on a Map
+        console.log(points);
+
+        if (points.length > 1) {
+            drawMap(points);
+        }
     });
 });
+
+function drawMap(points) {
+    console.log(points);
+    // Two Points on a Map
+    map.on('load', function () {
+        // First line
+        // Note of the id name
+        map.addLayer({
+            "id": "route1",
+            "type": "line",
+            "source": {
+                "type": "geojson",
+                "data": {
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "type": "LineString",
+                        "coordinates": [
+                           points[0],
+                           points[1]
+                        ]
+                    }
+                }
+            },
+            "layout": {
+                "line-join": "round",
+                "line-cap": "round"
+            },
+            "paint": {
+                "line-color": "#FFD700",
+                "line-width": 8
+            }
+
+        });
+    });
+}
