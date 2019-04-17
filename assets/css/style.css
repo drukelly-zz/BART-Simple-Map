@@ -2,15 +2,14 @@ body {
   background-color: #373A3C; 
 }
 
-.container {
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
 .card, .card-body, th, tr {
     background-color: #373A3C;
     color: whitesmoke;
     border: none;
+}
+
+#map-container {
+  height: 480px;;
 }
 
 #map {

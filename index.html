@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,39 +8,45 @@
   <link rel="shortcut icon" href="favicon.ico" />
   <title>BART Trip Scheduler: by Jose, Diana and John</title>
   <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <!-- Project's CSS -->
   <link rel="stylesheet" href="assets/css/style.css">
   <!-- Mapbox CSS and JS -->
   <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css">
   <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js"></script>
 </head>
-<body>
-    <!-- HEADER START -->
-    <nav class="navbar navbar-light bg-light">
-      <form class="container py-5 text-center">
-        <div class="d-flex flex-row justify-content-center">
-          <!-- Drop down point A -->
-          <select name="pointA" id="pointA" class="col mx-2">
-            <option disabled selected>Point A</option>
-          </select>
-          <div class="fixed bottom">to</div>
-          <!-- Drop down point B -->
-          <select name="pointB" id="pointB" class="col mx-2">
-            <option disabled selected>Point B</option>
-          </select>
-          <!-- Trip Label Form  -->
-          <input type="email" class="form-control col mx-2" id="exampleInputEmail1" aria-describedby="emailHelp"
-            placeholder="Trip Label">
-          <!-- 'Add trip' button -->
-          <input class="btn btn-primary" type="submit" value="Add Trip">
-        </div>
-      </form>
-    </nav>
-    <!--HEADER END-->
 
+<body>
+  <!-- As a heading -->
+
+  <header class="bg-light ">
+    <div class="container">
+      <h1 class="m-0">BART Trip Scheduler</h1>
+    </div>
+  </header>
+  <nav class="navbar navbar-light bg-light">
+    <form class="container text-center">
+      <div class="d-flex flex-row justify-content-center align-items-center">
+        <!-- 2 drop downs point A and B -->
+        <select name="pointA" id="pointA" class="col mx-2">
+          <option disabled selected>Point A</option>
+        </select>
+        <div>to</div>
+        <!-- 2 drop downs point A and B -->
+        <select name="pointB" id="pointB" class="col mx-2">
+          <option disabled selected>Point B</option>
+        </select>
+        <!-- form Trip Label  -->
+        <input type="email" class="form-control col mx-2" id="exampleInputEmail1" aria-describedby="emailHelp"
+          placeholder="Trip Label">
+        <!-- Add trip button -->
+        <input class="btn btn-primary" type="submit" value="Add Trip">
+      </div>
+    </form>
+  </nav>
   <!-- Mapbox -->
-  <div class="h-50 position-relative">
+  <div id="map-container" class="position-relative">
     <div id="map"></div>
   </div>
   <!-- End Mapbox -->
@@ -68,4 +75,5 @@
 
   <script src="assets/javascript/app.js"></script>
 </body>
+
 </html>
