@@ -9,6 +9,58 @@
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
+
+    <!-- As a heading -->
+    <nav class="navbar navbar-light bg-light">
+      <form class="container py-5 text-center">
+        <div class="d-flex flex-row justify-content-center">
+          <!-- 2 drop downs point A and B -->
+          <select name="pointA" id="pointA" class="col mx-2">
+            <option disabled selected>Point A</option>
+          </select>
+          <div class="fixed bottom">to</div>
+          <!-- 2 drop downs point A and B -->
+          <select name="pointB" id="pointB" class="col mx-2">
+            <option disabled selected>Point B</option>
+          </select>
+          <!-- form Trip Label  -->
+          <input type="email" class="form-control col mx-2" id="exampleInputEmail1" aria-describedby="emailHelp"
+            placeholder="Trip Label">
+  
+  
+          <!-- Add trip button -->
+          <input class="btn btn-primary" type="submit" value="Add Trip">
+        </div>
+      </form>
+    </nav>
+  
+  
+    <script>
+      const API_KEY = "MW9S-E7SL-26DU-VV8V";
+      const CMD = "stns";
+      const queryURL = `https://api.bart.gov/api/stn.aspx?cmd=${CMD}&key=${API_KEY}&json=y`;
+      fetch(queryURL)
+        .then(result => result.json())
+        .then(response => {
+          let stations = response.root.stations.station;
+          // Uncomment next line to preview "stations" as a response
+          // console.log(stations)
+          let targetA = document.querySelector("#pointA");
+          let targetB = document.querySelector("#pointB");
+          stations.forEach(station => {
+            // For Mapbox API, lng first, then lat
+            let template = `<option data-mapbox-gps="${station.gtfs_longitude},${station.gtfs_latitude}"value="${station.name}">${station.name}</option>`;
+            targetA.innerHTML += template;
+            targetB.innerHTML += template;
+          });
+        });
+      const selectGroups = document.querySelectorAll("select");
+      selectGroups.forEach(select => {
+        select.addEventListener("change", () => {
+          console.log(event.target.options[event.target.selectedIndex].getAttribute("data-mapbox-gps"))
+        });
+      })
+    </script>
   <script src="assets/javascript/app.js"></script>
 </body>
 </html>
