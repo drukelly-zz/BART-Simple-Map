@@ -3,50 +3,86 @@
 
 <head>
   <meta charset='utf-8' />
-  <title>Fit to the bounds of a LineString</title>
+  <title>Prototype v1</title>
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
   <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
+  <link rel="stylesheet" href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css"/>
   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css' rel='stylesheet' />
   <style>
     body {
-      margin: 0;
-      padding: 0;
+      background-color: #343332;
     }
-
     #map {
       position: absolute;
       top: 0;
       bottom: 0;
       width: 100%;
     }
-
     form {
-      background-color: white;
-      padding: 10px;
-      position: absolute;
-      text-align: center;
-      width: 100%;
       z-index: 10;
+    }
+    #trips {
+      right: 20px;
+      bottom: 20px;
     }
   </style>
 </head>
 
-<body>
-  <form>
-    <select name="pointA" id="pointA">
+<body class="ma0 pa0 sans-serif">
+  <form class="absolute bg-white flex items-center justify-around pv1 ph3 text-center w-100">
+    <select name="pointA" id="pointA" class="f6 ml2">
       <option disabled selected>Point A</option>
     </select>
-    <select name="pointB" id="pointB">
+    <div class="ph2">to</div>
+    <select name="pointB" id="pointB" class="f6 mr2">
       <option disabled selected>Point B</option>
     </select>
+    <div class="ml-auto pr3">
+      <input type="text" name="tripName" placeholder="Trip Label" required class="f6">
+      <button type="submit" class="ba bw0 input-reset pointer f6 link dim br-pill pv1 ph4 dib white bg-dark-blue">Add Trip</button>
+    </div>
   </form>
 
   <div id='map'></div>
 
+  <table id="trips" class="fixed pa3 bg-white black ba bw1">
+    <thead>
+      <tr>
+        <th>Point A</th>
+        <th>Point B</th>
+        <th>Line</th>
+        <th>Next Train</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="pa2 tc">Point A</td>
+        <td class="pa2 tc">Point B</td>
+        <td class="pa2 tc">Orange</td>
+        <td class="pa2 tc">11:57am</td>
+        <td class="pa2 tc"><a href="#" class="link mr1">✏️</a> <a href="#" class="link">❌</a> </td>
+      </tr>
+      <tr>
+        <td class="pa2 tc">Point A</td>
+        <td class="pa2 tc">Point B</td>
+        <td class="pa2 tc">Orange</td>
+        <td class="pa2 tc">11:57am</td>
+        <td class="pa2 tc"><a href="#" class="link mr1">✏️</a> <a href="#" class="link">❌</a> </td>
+      </tr>
+      <tr>
+        <td class="pa2 tc">Point A</td>
+        <td class="pa2 tc">Point B</td>
+        <td class="pa2 tc">Orange</td>
+        <td class="pa2 tc">11:57am</td>
+        <td class="pa2 tc"><a href="#" class="link mr1">✏️</a> <a href="#" class="link">❌</a> </td>
+      </tr>
+    </tbody>
+  </table>
+
   <script>
     const API_KEY = "MW9S-E7SL-26DU-VV8V";
-    const CMD = "stns";
-    const queryURL = `https://api.bart.gov/api/stn.aspx?cmd=${CMD}&key=${API_KEY}&json=y`;
+    const queryURL = `https://api.bart.gov/api/stn.aspx?cmd=stns&key=${API_KEY}&json=y`;
     let points = [];
     // Fetching the API.
     fetch(queryURL)
