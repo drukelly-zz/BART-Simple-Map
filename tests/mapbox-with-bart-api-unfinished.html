@@ -40,6 +40,9 @@
     <select name="pointB" id="pointB" class="f6 mr2">
       <option disabled selected>Point B</option>
     </select>
+    <div class="ph2">
+      <a href="#" id="btnRefresh" class="link">🔁</a>
+    </div>
     <div class="ml-auto pr3">
       <input type="text" name="tripName" placeholder="Trip Label" required class="f6">
       <button type="submit" class="ba bw0 input-reset pointer f6 link dim br-pill pv1 ph4 dib white bg-dark-blue">Add
@@ -52,6 +55,7 @@
   <table id="trips" class="fixed pa3 bg-white black ba bw1">
     <thead>
       <tr>
+        <th>Trip Name</th>
         <th>Point A</th>
         <th>Point B</th>
         <th>Line</th>
@@ -61,11 +65,12 @@
     </thead>
     <tbody>
       <tr>
+        <td class="pa2 tc"><a href="#" class="blue link">Trip Name</a></td>
         <td class="pa2 tc">Point A</td>
         <td class="pa2 tc">Point B</td>
         <td class="pa2 tc">Orange</td>
         <td class="pa2 tc">11:57am</td>
-        <td class="pa2 tc"><a href="#" class="link mr1">✏️</a> <a href="#" class="link">❌</a> </td>
+        <td class="pa2 tc"><a href="#" class="link">❌</a> </td>
       </tr>
     </tbody>
   </table>
@@ -181,6 +186,11 @@
     }
     // TODO
     // https://stackoverflow.com/questions/26635880/remove-polylines-on-a-map-from-mapbox
+    // Refresh the page to start over
+    document.querySelector("#btnRefresh").addEventListener("click", (event) => {
+      event.preventDefault();
+      window.location.reload();
+    })
   </script>
 
 </body>
