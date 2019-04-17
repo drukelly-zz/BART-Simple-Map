@@ -1,3 +1,22 @@
+// Initialize Firebase
+var config = {
+    apiKey: "AIzaSyCfjWyv1_8URFUk7XYtO6ek7y2SyLuEgm0",
+    authDomain: "project-1-90b03.firebaseapp.com",
+    databaseURL: "https://project-1-90b03.firebaseio.com",
+    projectId: "project-1-90b03",
+    storageBucket: "project-1-90b03.appspot.com",
+    messagingSenderId: "521789950"
+};
+firebase.initializeApp(config);
+
+// Mapbox
+mapboxgl.accessToken = 'pk.eyJ1IjoiZHJ1a2VsbHkiLCJhIjoiY2p1ZGpsYzd1MDgyNTQ0bXRqbW5rbXk1dCJ9.IOyAszC7bL2GBhSRgCdAVQ';
+var map = new mapboxgl.Map({
+  container: 'map', // container id
+  style: 'mapbox://styles/mapbox/dark-v9', // stylesheet location
+  center: [-122.056012, 37.928468], // starting position [lng, lat]
+  zoom: 9 // starting zoom
+});
 
 // Setting up variables with which the BART API will be accessed.
 const API_KEY = "MW9S-E7SL-26DU-VV8V";
@@ -25,15 +44,4 @@ selectGroups.forEach(select => {
     select.addEventListener("change", () => {
         console.log(event.target.options[event.target.selectedIndex].getAttribute("data-mapbox-gps"))
     });
-})
-
-// Initialize Firebase
-var config = {
-    apiKey: "AIzaSyCfjWyv1_8URFUk7XYtO6ek7y2SyLuEgm0",
-    authDomain: "project-1-90b03.firebaseapp.com",
-    databaseURL: "https://project-1-90b03.firebaseio.com",
-    projectId: "project-1-90b03",
-    storageBucket: "project-1-90b03.appspot.com",
-    messagingSenderId: "521789950"
-};
-firebase.initializeApp(config);
+});
