@@ -2,6 +2,10 @@ body {
   background-color: #373A3C; 
 }
 
+#map-container {
+  height: 480px;;
+}
+
 #map {
   bottom: 0;
   position: absolute;
