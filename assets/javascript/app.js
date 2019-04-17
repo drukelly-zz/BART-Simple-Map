@@ -39,6 +39,8 @@ fetch(queryURL)
             targetB.innerHTML += template;
         });
     });
+
+// Targets the select dropdown.
 const selectGroups = document.querySelectorAll("select");
 selectGroups.forEach(select => {
     select.addEventListener("change", () => {

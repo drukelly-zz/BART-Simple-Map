@@ -4,6 +4,7 @@ A BART trip planner. The user can select a start point and an end point and see 
 # Built With
 - HTML
 - CSS
+- Bootstrap
 - JavaScript
 - MapBox API
 - BART API
