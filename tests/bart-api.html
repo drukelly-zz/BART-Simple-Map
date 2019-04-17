@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>BART API Example</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+  <form class="container py-5 text-center">
+    <select name="pointA" id="pointA">
+      <option disabled selected>Please Select A Station</option>
+    </select>
+    to
+    <select name="pointB" id="pointB">
+      <option disabled selected>Please Select A Station</option>
+    </select>
+  </form>
+  <script>
+    const API_KEY = "MW9S-E7SL-26DU-VV8V";
+    const CMD = "stns";
+    const queryURL = `https://api.bart.gov/api/stn.aspx?cmd=${CMD}&key=${API_KEY}&json=y`;
+    fetch(queryURL)
+      .then(result => result.json())
+      .then(response => {
+        let stations = response.root.stations.station;
+        // Uncomment next line to preview "stations" as a response
+        // console.log(stations)
+        let targetA = document.querySelector("#pointA");
+        let targetB = document.querySelector("#pointB");
+        stations.forEach(station => {
+          // For Mapbox API, lng first, then lat
+          let template = `<option data-mapbox-gps="${station.gtfs_longitude},${station.gtfs_latitude}"value="${station.name}">${station.name}</option>`;
+          targetA.innerHTML += template;
+          targetB.innerHTML += template;
+        });
+      });
+    const selectGroups = document.querySelectorAll("select");
+    selectGroups.forEach(select => {
+      select.addEventListener("change", () => {
+        console.log(event.target.options[event.target.selectedIndex].getAttribute("data-mapbox-gps"))
+      });
+    })
+  </script>
+</body>
+
+</html>
