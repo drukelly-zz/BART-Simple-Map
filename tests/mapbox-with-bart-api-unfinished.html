@@ -6,21 +6,24 @@
   <title>Prototype v1</title>
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
   <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
-  <link rel="stylesheet" href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css" />
   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css' rel='stylesheet' />
   <style>
     body {
       background-color: #343332;
     }
+
     #map {
       position: absolute;
       top: 0;
       bottom: 0;
       width: 100%;
     }
+
     form {
       z-index: 10;
     }
+
     #trips {
       right: 20px;
       bottom: 20px;
@@ -39,7 +42,8 @@
     </select>
     <div class="ml-auto pr3">
       <input type="text" name="tripName" placeholder="Trip Label" required class="f6">
-      <button type="submit" class="ba bw0 input-reset pointer f6 link dim br-pill pv1 ph4 dib white bg-dark-blue">Add Trip</button>
+      <button type="submit" class="ba bw0 input-reset pointer f6 link dim br-pill pv1 ph4 dib white bg-dark-blue">Add
+        Trip</button>
     </div>
   </form>
 
@@ -63,56 +67,67 @@
         <td class="pa2 tc">11:57am</td>
         <td class="pa2 tc"><a href="#" class="link mr1">✏️</a> <a href="#" class="link">❌</a> </td>
       </tr>
-      <tr>
-        <td class="pa2 tc">Point A</td>
-        <td class="pa2 tc">Point B</td>
-        <td class="pa2 tc">Orange</td>
-        <td class="pa2 tc">11:57am</td>
-        <td class="pa2 tc"><a href="#" class="link mr1">✏️</a> <a href="#" class="link">❌</a> </td>
-      </tr>
-      <tr>
-        <td class="pa2 tc">Point A</td>
-        <td class="pa2 tc">Point B</td>
-        <td class="pa2 tc">Orange</td>
-        <td class="pa2 tc">11:57am</td>
-        <td class="pa2 tc"><a href="#" class="link mr1">✏️</a> <a href="#" class="link">❌</a> </td>
-      </tr>
     </tbody>
   </table>
 
   <script>
-    const API_KEY = "MW9S-E7SL-26DU-VV8V";
-    const queryURL = `https://api.bart.gov/api/stn.aspx?cmd=stns&key=${API_KEY}&json=y`;
+    // Mapbox Access Token
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZHJ1a2VsbHkiLCJhIjoiY2p1ZGpsYzd1MDgyNTQ0bXRqbW5rbXk1dCJ9.IOyAszC7bL2GBhSRgCdAVQ';
+    // BART API Key
+    const BART_API_KEY = "MW9S-E7SL-26DU-VV8V";
+    // BART Query Stations API URL
+    const queryStations = `https://api.bart.gov/api/stn.aspx?cmd=stns&key=${BART_API_KEY}&json=y`;
+    // Empty `points` Array 
     let points = [];
-    // Fetching the API.
-    fetch(queryURL)
+    let lineHexColor = [];
+    // Fetching the API for the dropdowns
+    fetch(queryStations)
       .then(result => result.json())
       .then(response => {
         let stations = response.root.stations.station;
         // Uncomment next line to preview "stations" as a response
+        // and get a better idea of JSON data structure
         // console.log(stations)
         let targetA = document.querySelector("#pointA");
         let targetB = document.querySelector("#pointB");
         stations.forEach(station => {
-          // For Mapbox API, lng first, then lat
-          let template = `<option data-mapbox-lng="${station.gtfs_longitude}" data-mapbox-lat="${station.gtfs_latitude}" value="${station.name}">${station.name}</option>`;
+          // Create option tag template
+          // For Mapbox API specifically, lng first, then lat
+          let template = `<option data-bart-abbr="${station.abbr}" data-mapbox-lng="${station.gtfs_longitude}" data-mapbox-lat="${station.gtfs_latitude}" value="${station.name}">${station.name}</option>`;
+          // Append template entries into the parent/targeted element
           targetA.innerHTML += template;
           targetB.innerHTML += template;
         });
       });
-    // Targets the select dropdown.
+    // `selectGroups` is a Node collection of all select tags on the page
     const selectGroups = document.querySelectorAll("select");
+    // Loop through each select group on page
     selectGroups.forEach(select => {
+      // Attach an event listener for change. Per change, we want to capture key 
       select.addEventListener("change", (event) => {
-        var lng = event.target.options[event.target.selectedIndex].getAttribute("data-mapbox-lng");
-        var lat = event.target.options[event.target.selectedIndex].getAttribute("data-mapbox-lat");
-        points.push([parseFloat(lng), parseFloat(lat)]);
-        if (points.length === 2) {
-          drawMap(points);
-        }
+        // Capture lng, lat values to pass onto `points` empty Array
+        let lng = event.target.options[event.target.selectedIndex].getAttribute("data-mapbox-lng");
+        let lat = event.target.options[event.target.selectedIndex].getAttribute("data-mapbox-lat");
+        let abbr = event.target.options[event.target.selectedIndex].getAttribute("data-bart-abbr");
+        let queryOrigination = `http://api.bart.gov/api/etd.aspx?cmd=etd&orig=${abbr}&key=${BART_API_KEY}&json=y`;
+        fetch(queryOrigination)
+          .then(result => result.json())
+          .then(response => {
+            let etdObj = response.root.station[0];
+            lineHexColor.length = 0;
+            lineHexColor.push(etdObj.etd[0].estimate[0].hexcolor);
+          });
+      // Groom the data inputs by parsing them as numbers and not strings!
+      // Each lng and lat pair is an Array within an Array
+      // i.e. [ [lng, lat], ... ]
+      points.push([parseFloat(lng), parseFloat(lat)]);
+      // If we have the necessary ingredients, i.e. two sets lng, lat,
+      // run the drawNap functions with the pointA/pointB selections
+      if (points.length === 2) drawMap(points, lineHexColor);
       });
     });
-    const drawMap = (points) => {
+    // 
+    const drawMap = (points, lineHexColor) => {
       var geojson = {
         "type": "FeatureCollection",
         "features": [{
@@ -125,7 +140,6 @@
         }]
       };
       // Mapbox
-      mapboxgl.accessToken = 'pk.eyJ1IjoiZHJ1a2VsbHkiLCJhIjoiY2p1ZGpsYzd1MDgyNTQ0bXRqbW5rbXk1dCJ9.IOyAszC7bL2GBhSRgCdAVQ';
       // A GeoJSON object with a LineString route from the ___ to ___
       var map = new mapboxgl.Map({
         container: 'map',
@@ -146,7 +160,7 @@
             "line-cap": "round"
           },
           "paint": {
-            "line-color": "#FFD700",
+            "line-color": lineHexColor[0],
             "line-width": 5
           }
         });
