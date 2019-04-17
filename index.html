@@ -4,12 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="shortcut icon" href="favicon.ico" />
   <title>BART Trip Scheduler: by Jose, Diana and John</title>
+  <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <!-- Project's CSS -->
   <link rel="stylesheet" href="assets/css/style.css">
+  <!-- Mapbox CSS and JS -->
+  <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css">
+  <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js"></script>
 </head>
 <body>
-
     <!-- As a heading -->
     <nav class="navbar navbar-light bg-light">
       <form class="container py-5 text-center">
@@ -26,41 +31,40 @@
           <!-- form Trip Label  -->
           <input type="email" class="form-control col mx-2" id="exampleInputEmail1" aria-describedby="emailHelp"
             placeholder="Trip Label">
-  
-  
           <!-- Add trip button -->
           <input class="btn btn-primary" type="submit" value="Add Trip">
         </div>
       </form>
     </nav>
-  
-  
-    <script>
-      const API_KEY = "MW9S-E7SL-26DU-VV8V";
-      const CMD = "stns";
-      const queryURL = `https://api.bart.gov/api/stn.aspx?cmd=${CMD}&key=${API_KEY}&json=y`;
-      fetch(queryURL)
-        .then(result => result.json())
-        .then(response => {
-          let stations = response.root.stations.station;
-          // Uncomment next line to preview "stations" as a response
-          // console.log(stations)
-          let targetA = document.querySelector("#pointA");
-          let targetB = document.querySelector("#pointB");
-          stations.forEach(station => {
-            // For Mapbox API, lng first, then lat
-            let template = `<option data-mapbox-gps="${station.gtfs_longitude},${station.gtfs_latitude}"value="${station.name}">${station.name}</option>`;
-            targetA.innerHTML += template;
-            targetB.innerHTML += template;
-          });
-        });
-      const selectGroups = document.querySelectorAll("select");
-      selectGroups.forEach(select => {
-        select.addEventListener("change", () => {
-          console.log(event.target.options[event.target.selectedIndex].getAttribute("data-mapbox-gps"))
-        });
-      })
-    </script>
+  <!-- Mapbox -->
+  <div class="h-50 position-relative">
+    <div id="map"></div>
+  </div>
+  <!-- End Mapbox -->
+  <!--START TABLE-->
+    <div class="container" id="tab">
+      <div class="card">
+        <div class="card-header">
+          BART Trip Scheduler
+        </div>
+        <div class="card-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Trip Label</th>
+                <th scope="col">Point A</th>
+                <th scope="col">Point B</th>
+                <th scope="col">Minutes Away</th>
+                <th scope="col">Next Arrival</th>
+              </tr>
+            </thead>
+            <tbody id="table-list">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <!--END TABLE-->
   <script src="assets/javascript/app.js"></script>
 </body>
 </html>

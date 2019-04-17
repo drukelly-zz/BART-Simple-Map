@@ -1,0 +1,10 @@
+body {
+  background-color: #373A3C; 
+}
+
+#map {
+  bottom: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
