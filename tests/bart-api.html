@@ -11,15 +11,32 @@
 </head>
 
 <body>
-  <form class="container py-5 text-center">
-    <select name="pointA" id="pointA">
-      <option disabled selected>Please Select A Station</option>
-    </select>
-    to
-    <select name="pointB" id="pointB">
-      <option disabled selected>Please Select A Station</option>
-    </select>
-  </form>
+
+  <!-- As a heading -->
+  <nav class="navbar navbar-light bg-light">
+    <form class="container py-5 text-center">
+      <div class="d-flex flex-row justify-content-center">
+        <!-- 2 drop downs point A and B -->
+        <select name="pointA" id="pointA" class="col mx-2">
+          <option disabled selected>Point A</option>
+        </select>
+        <div class="fixed bottom">to</div>
+        <!-- 2 drop downs point A and B -->
+        <select name="pointB" id="pointB" class="col mx-2">
+          <option disabled selected>Point B</option>
+        </select>
+        <!-- form Trip Label  -->
+        <input type="email" class="form-control col mx-2" id="exampleInputEmail1" aria-describedby="emailHelp"
+          placeholder="Trip Label">
+
+
+        <!-- Add trip button -->
+        <input class="btn btn-primary" type="submit" value="Add Trip">
+      </div>
+    </form>
+  </nav>
+
+
   <script>
     const API_KEY = "MW9S-E7SL-26DU-VV8V";
     const CMD = "stns";
