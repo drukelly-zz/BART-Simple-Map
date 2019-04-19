@@ -51,7 +51,7 @@
         let targetB = document.querySelector("#pointB");
         stations.forEach(station => {
           // For Mapbox API, lng first, then lat
-          let template = `<option data-mapbox-gps="${station.gtfs_longitude},${station.gtfs_latitude}"value="${station.name}">${station.name}</option>`;
+          let template = `<option data-mapbox-lng="${station.gtfs_longitude}" data-mapbox-lat="${station.gtfs_latitude}" value="${station.name}">${station.name}</option>`;
           targetA.innerHTML += template;
           targetB.innerHTML += template;
         });
@@ -59,7 +59,9 @@
     const selectGroups = document.querySelectorAll("select");
     selectGroups.forEach(select => {
       select.addEventListener("change", () => {
-        console.log(event.target.options[event.target.selectedIndex].getAttribute("data-mapbox-gps"))
+        var val1 = event.target.options[event.target.selectedIndex].getAttribute("data-mapbox-lng");
+        var val2 = parseFloat(event.target.options[event.target.selectedIndex].getAttribute("data-mapbox-lat"));
+        console.log(val1, val2);
       });
     })
   </script>

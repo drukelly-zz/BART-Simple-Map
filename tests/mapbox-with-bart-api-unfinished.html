@@ -8,6 +8,8 @@
   <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
   <link rel="stylesheet" href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css" />
   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css' rel='stylesheet' />
+  <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase-database.js"></script>
   <style>
     body {
       background-color: #343332;
@@ -44,8 +46,8 @@
       <a href="#" id="btnRefresh" class="link">🔁</a>
     </div>
     <div class="ml-auto pr3">
-      <input type="text" name="tripName" placeholder="Trip Label" required class="f6">
-      <button type="submit" class="ba bw0 input-reset pointer f6 link dim br-pill pv1 ph4 dib white bg-dark-blue">Add
+      <input type="text" id="tripName" name="tripName" placeholder="Trip Label" required class="f6">
+      <button type="submit" class="ba bw0 input-reset pointer f6 link dim br-pill pv1 ph4 dib white bg-dark-blue" id="addTrip">Add
         Trip</button>
     </div>
   </form>
@@ -55,27 +57,73 @@
   <table id="trips" class="fixed pa3 bg-white black ba bw1">
     <thead>
       <tr>
-        <th>Trip Name</th>
-        <th>Point A</th>
-        <th>Point B</th>
-        <th>Line</th>
-        <th>Next Train</th>
-        <th>Action</th>
+        <th class="ph3 tl">Trip Name</th>
+        <th class="ph3 tl">Point A</th>
+        <th class="ph3 tl">Point B</th>
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td class="pa2 tc"><a href="#" class="blue link">Trip Name</a></td>
-        <td class="pa2 tc">Point A</td>
-        <td class="pa2 tc">Point B</td>
-        <td class="pa2 tc">Orange</td>
-        <td class="pa2 tc">11:57am</td>
-        <td class="pa2 tc"><a href="#" class="link">❌</a> </td>
-      </tr>
+      <!-- <tr>
+        <td class="tc">Trip Name</td>
+        <td class="tc">Point A</td>
+        <td class="tc">Point B</td>
+        <td class="tc">11:57am</td>
+        <td class="tc"><a href="#" class="link">❌</a> </td>
+      </tr> -->
     </tbody>
   </table>
 
   <script>
+    // Firebase
+    const config = {
+      apiKey: "AIzaSyCfjWyv1_8URFUk7XYtO6ek7y2SyLuEgm0",
+      authDomain: "project-1-90b03.firebaseapp.com",
+      databaseURL: "https://project-1-90b03.firebaseio.com",
+      projectId: "project-1-90b03",
+      storageBucket: "project-1-90b03.appspot.com",
+      messagingSenderId: "521789950"
+    };
+    firebase.initializeApp(config);
+    const firebaseDB = firebase.database();
+    const addTrip = () => {
+      const tripName = document.querySelector("#tripName").value.trim();
+      const pointAValue = document.querySelector("#pointA").value;
+      const pointBValue = document.querySelector("#pointB").value;
+      if (tripName == null || pointAValue == null || pointB == null) {
+        // TODO Merge Diana's modal
+        return false;
+      } else {
+        firebaseDB.ref().push({
+          tripName,
+          pointA: pointAValue, 
+          pointB: pointBValue
+        });
+        updateTable();
+      }
+    }
+    const updateTable = () => {
+      document.querySelector("tbody").innerHTML = "";
+      firebaseDB.ref().on("child_added", (childSnapshot) => {
+        let target = document.querySelector("tbody");
+        let tr = document.createElement("tr");
+        tr.setAttribute("id", childSnapshot.key);
+        let cellTripName = document.createElement("td");
+        cellTripName.classList.add("ph3")
+        cellTripName.innerText = childSnapshot.val().tripName;
+        let cellPointA = document.createElement("td");
+        cellPointA.classList.add("ph3");
+        let cellPointAGPS = document.createElement("td");
+        cellPointA.innerHTML = childSnapshot.val().pointA;
+        let cellPointB = document.createElement("td");
+        cellPointB.classList.add("ph3");
+        cellPointB.innerHTML = childSnapshot.val().pointB;
+        tr.appendChild(cellTripName);
+        tr.appendChild(cellPointA);
+        tr.appendChild(cellPointB);
+        target.appendChild(tr);
+      })
+    }
+    document.querySelector("#addTrip").addEventListener("click", addTrip);
     // Mapbox Access Token
     mapboxgl.accessToken = 'pk.eyJ1IjoiZHJ1a2VsbHkiLCJhIjoiY2p1ZGpsYzd1MDgyNTQ0bXRqbW5rbXk1dCJ9.IOyAszC7bL2GBhSRgCdAVQ';
     // BART API Key
@@ -84,7 +132,7 @@
     const queryStations = `https://api.bart.gov/api/stn.aspx?cmd=stns&key=${BART_API_KEY}&json=y`;
     // Empty `points` Array 
     let points = [];
-    let lineHexColor = [];
+    let lineHexColor = ["#f00"];
     // Fetching the API for the dropdowns
     fetch(queryStations)
       .then(result => result.json())
@@ -114,21 +162,14 @@
         let lng = event.target.options[event.target.selectedIndex].getAttribute("data-mapbox-lng");
         let lat = event.target.options[event.target.selectedIndex].getAttribute("data-mapbox-lat");
         let abbr = event.target.options[event.target.selectedIndex].getAttribute("data-bart-abbr");
-        let queryOrigination = `http://api.bart.gov/api/etd.aspx?cmd=etd&orig=${abbr}&key=${BART_API_KEY}&json=y`;
-        fetch(queryOrigination)
-          .then(result => result.json())
-          .then(response => {
-            let etdObj = response.root.station[0];
-            lineHexColor.length = 0;
-            lineHexColor.push(etdObj.etd[0].estimate[0].hexcolor);
-          });
-      // Groom the data inputs by parsing them as numbers and not strings!
-      // Each lng and lat pair is an Array within an Array
-      // i.e. [ [lng, lat], ... ]
-      points.push([parseFloat(lng), parseFloat(lat)]);
-      // If we have the necessary ingredients, i.e. two sets lng, lat,
-      // run the drawNap functions with the pointA/pointB selections
-      if (points.length === 2) drawMap(points, lineHexColor);
+        
+        // Groom the data inputs by parsing them as numbers and not strings!
+        // Each lng and lat pair is an Array within an Array
+        // i.e. [ [lng, lat], ... ]
+        points.push([parseFloat(lng), parseFloat(lat)]);
+        // If we have the necessary ingredients, i.e. two sets lng, lat,
+        // run the drawNap functions with the pointA/pointB selections
+        if (points.length === 2) drawMap(points, lineHexColor);
       });
     });
     // 
@@ -190,7 +231,13 @@
     document.querySelector("#btnRefresh").addEventListener("click", (event) => {
       event.preventDefault();
       window.location.reload();
-    })
+    });
+
+    document.querySelector("form").addEventListener("submit", (event) => {
+      event.preventDefault();
+    });
+
+    updateTable();
   </script>
 
 </body>
