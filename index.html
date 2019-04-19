@@ -5,75 +5,49 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="shortcut icon" href="favicon.ico" />
-  <title>BART Trip Scheduler: by Jose, Diana and John</title>
-  <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <!-- Project's CSS -->
-  <link rel="stylesheet" href="assets/css/style.css">
-  <!-- Mapbox CSS and JS -->
-  <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css">
-  <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js"></script>
+  <title>BART Simple Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css" />
+  <link rel="stylesheet" href="assets/css/app.css">
+
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css' rel='stylesheet' />
+
+  <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase-database.js"></script>
 </head>
 
-<body>
-  <!-- As a heading -->
-
-  <header class="bg-light ">
-    <div class="container">
-      <h1 class="m-0">BART Trip Scheduler</h1>
+<body class="ma0 pa0 sans-serif">
+  <form class="absolute bg-white flex items-center justify-around pv1 ph3 text-center w-100">
+    <select name="pointA" id="pointA" class="f6 ml2">
+      <option disabled selected>Point A</option>
+    </select>
+    <div class="ph2">to</div>
+    <select name="pointB" id="pointB" class="f6 mr2">
+      <option disabled selected>Point B</option>
+    </select>
+    <div class="ph2">
+      <a href="#" id="btnRefresh" class="link">🔁</a>
     </div>
-  </header>
-  <nav class="navbar navbar-light bg-light">
-    <form class="container text-center">
-      <div class="d-flex flex-row justify-content-center align-items-center">
-        <!-- 2 drop downs point A and B -->
-        <select name="pointA" id="pointA" class="col mx-2">
-          <option disabled selected>Point A</option>
-        </select>
-        <div>to</div>
-        <!-- 2 drop downs point A and B -->
-        <select name="pointB" id="pointB" class="col mx-2">
-          <option disabled selected>Point B</option>
-        </select>
-        <!-- form Trip Label  -->
-        <input type="email" class="form-control col mx-2" id="exampleInputEmail1" aria-describedby="emailHelp"
-          placeholder="Trip Label">
-        <!-- Add trip button -->
-        <input class="btn btn-primary bg-dark border-dark" type="submit" value="Add Trip">
-      </div>
-    </form>
-  </nav>
-  <!-- Mapbox -->
-  <div id="map-container" class="position-relative">
-    <div id="map"></div>
-  </div>
-  <!-- End Mapbox -->
+    <div class="ml-auto pr3">
+      <input type="text" id="tripName" name="tripName" placeholder="Trip Label" class="f6">
+      <button type="submit" class="ba bw0 input-reset pointer f6 link dim br-pill pv1 ph4 dib white bg-dark-blue"
+        id="addTrip">Add Trip</button>
+    </div>
+  </form>
+  <div id="map"></div>
+  <table id="trips" class="fixed pa3 bg-white black ba bw1">
+    <thead>
+      <tr>
+        <th class="ph3 tl">Trip Name</th>
+        <th class="ph3 tl">Point A</th>
+        <th class="ph3 tl">Point B</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
 
-  <!--START TABLE-->
-    
-      <div class="card rounded-0 w-100">
-        <div class="card-body">
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Trip Label</th>
-                <th scope="col">Point A</th>
-                <th scope="col">Point B</th>
-                <th scope="col">Minutes Away</th>
-                <th scope="col">Next Arrival</th>
-              </tr>
-            </thead>
-            <tbody id="table-list">
-            </tbody>
-          </table>
-        </div>
-      </div>
-    
-  <!--END TABLE-->
-
-  <script src="assets/javascript/app.js"></script>
+  <script src="assets/js/app.js"></script>
 </body>
 
 </html>
