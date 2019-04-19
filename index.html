@@ -38,11 +38,23 @@
           <option disabled selected>Point B</option>
         </select>
         <!-- form Trip Label  -->
-        <input type="email" class="form-control col mx-2" id="exampleInputEmail1" aria-describedby="emailHelp"
+        <input type="text" class="form-control col mx-2" id="exampleInputEmail1" aria-describedby="emailHelp"
           placeholder="Trip Label">
         <!-- Add trip button -->
-        <input class="btn btn-primary bg-dark border-dark" type="submit" value="Add Trip">
+        <input id="modalBtn" class="btn btn-primary bg-dark border-dark" type="submit" value="Add Trip">
       </div>
+
+      <!--START MODAL-->
+      <div id="formModal" class="modal">
+      
+        <!-- Modal content -->
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <p>Please fill out all the required fields!</p>
+        </div>
+      </div>
+      <!--END MODAL-->
+
     </form>
   </nav>
   <!-- Mapbox -->
