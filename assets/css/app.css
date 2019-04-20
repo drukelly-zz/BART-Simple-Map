@@ -1,0 +1,19 @@
+body {
+  background-color: #343332;
+}
+
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+form {
+  z-index: 10;
+}
+
+#trips {
+  right: 20px;
+  bottom: 40px;
+}
