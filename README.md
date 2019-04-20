@@ -15,7 +15,6 @@ A BART trip planner. The user can select a start point and an end point and see 
 - John Kelly (@drukelly)
 
 # License
-=======
 - GNU General Public License v3.0, See LICENCE.md for additional information.
 
 # Presentation Link
